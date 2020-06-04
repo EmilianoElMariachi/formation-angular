@@ -1,13 +1,15 @@
 import {Appreciation} from './Appreciation';
 
 export class Statistique {
+    private id: number;
     private intitule: string;
     private valeur: string;
     private icone: string;
     private appreciation: Appreciation;
     private dateDernierRefresh: Date;
 
-    constructor(intitule: string, valeur: string, icone: string, appreciation: Appreciation) {
+    constructor(id: number, intitule: string, valeur: string, icone: string, appreciation: Appreciation) {
+        this.id = id;
         this.intitule = intitule;
         this.valeur = valeur;
         this.icone = icone;
@@ -15,6 +17,10 @@ export class Statistique {
         this.dateDernierRefresh = new Date();
     }
 
+    getId(): number {
+        return this.id;
+    }
+    
     getIntitule(): string {
         return this.intitule;
     }

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AdminLayoutRoutes } from './admin-layout.routing';
 
@@ -18,12 +18,15 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StatistiqueComponent } from 'app/shared/components/statistique/statistique.component';
 import { HoverBorderDirective } from 'app/shared/directives/hover-border.directive';
 import { AppreciationToColorPipe } from 'app/shared/pipes/appreciation-to-color.pipe';
+import { StatTemplatedrivenFormComponent } from 'app/shared/components/stat-templatedriven-form/new-stat-templatedriven-form/stat-templatedriven-form.component';
+import { StatReactiveFormComponent } from '../../shared/components/stat-reactive-form/stat-reactive-form.component';
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule.forChild(AdminLayoutRoutes),
     FormsModule,
+    ReactiveFormsModule,
     NgbModule
   ],
   declarations: [
@@ -37,7 +40,9 @@ import { AppreciationToColorPipe } from 'app/shared/pipes/appreciation-to-color.
     NotificationsComponent,
     StatistiqueComponent,
     HoverBorderDirective,
-    AppreciationToColorPipe
+    AppreciationToColorPipe,
+    StatTemplatedrivenFormComponent,
+    StatReactiveFormComponent
   ]
 })
 

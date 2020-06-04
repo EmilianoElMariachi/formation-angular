@@ -20,14 +20,13 @@ export class DashboardComponent implements OnInit {
   public chartEmail;
   public chartHours;
 
+  public editMode:boolean = false;
+  public editedStat:Statistique;
+
   constructor(private statService : StatService) { }
 
   ngOnInit() {
     this.tabStats = this.statService.getAllStats();
-
-    setTimeout(() => {
-      this.statService.addStat(new Statistique("Nouvelle stat", "Une valeur", "bank", Appreciation.ERROR));
-    }, 2000);
 
     this.initCharts();
 
@@ -37,6 +36,41 @@ export class DashboardComponent implements OnInit {
       });
       this.chartHours.update();
     }, 5000);
+  }
+
+  /* -------------------------------- */
+  /* EVENEMENTS COMPOSANT FORMULAIRE */
+  /* -------------------------------- */  
+
+  /* Demande d'annulation de mise à jour */
+  cancelEdit() {
+    this.editMode = false;
+  }
+  
+  /* Demande de création de stat */
+  addStat(stat: Statistique) {
+    this.statService.addStat(stat);
+  }
+
+  /* Demande de validation d'une mise à jour */
+  saveUpdate(stat: Statistique) {
+    this.statService.updateStat(stat);
+    this.editMode = false;
+  }
+
+  /* -------------------------------- */
+  /* EVENEMENTS COMPOSANT STATISTIQUE */
+  /* -------------------------------- */
+  /* Demande de suppression d'une statistique*/
+
+  deleteStat(stat: Statistique) {
+    this.statService.removeStat(stat);
+  }
+
+  /* Demande de mise à jour d'une statistique */
+  updateStat(stat: Statistique) {
+    this.editMode = true;
+    this.editedStat = stat;
   }
 
   initCharts() {

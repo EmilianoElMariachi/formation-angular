@@ -11,6 +11,10 @@
                     <p class="card-category">{{ stat.getIntitule() }}</p>
                     <p class="card-title">{{ stat.getValeur() }}</p>
                 </div>
+                <div class="actionButtonsZone">
+                    <i class="nc-icon text-danger nc-simple-remove" (click)="askForDelete()"></i>
+                    <i class="nc-icon editIcon nc-ruler-pencil" (click)="askForUpdate()"></i>
+                </div>                
             </div>
         </div>
     </div>
