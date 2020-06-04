@@ -21,17 +21,6 @@ export class DashboardComponent implements OnInit {
   public chartEmail;
   public chartHours;
 
-  getAppreciationClass(stat: Statistique) {
-    switch (stat.getAppreciation()) {
-      case Appreciation.SUCCESS:
-        return "success"
-      case Appreciation.WARNING:
-        return "warning";
-      case Appreciation.ERROR:
-        return "danger";
-    }
-  }
-
   ngOnInit() {
     this.revenue = new Statistique("Revenue", "1450$", "money-coins", Appreciation.SUCCESS);
     this.capacity = new Statistique("Capacity", "151GB", "globe", Appreciation.WARNING);
