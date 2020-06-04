@@ -16,15 +16,5 @@ export class StatistiqueComponent implements OnInit {
 
   ngOnInit() {
   }
-  
-  getAppreciationClass(stat: Statistique) {
-    switch (stat.getAppreciation()) {
-      case Appreciation.SUCCESS:
-        return "success"
-      case Appreciation.WARNING:
-        return "warning";
-      case Appreciation.ERROR:
-        return "danger";
-    }
-  }
+
 }

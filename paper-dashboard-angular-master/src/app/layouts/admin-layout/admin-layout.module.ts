@@ -17,6 +17,7 @@ import { UpgradeComponent }         from '../../pages/upgrade/upgrade.component'
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StatistiqueComponent } from 'app/shared/components/statistique/statistique.component';
 import { HoverBorderDirective } from 'app/shared/directives/hover-border.directive';
+import { AppreciationToColorPipe } from 'app/shared/pipes/appreciation-to-color.pipe';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import { HoverBorderDirective } from 'app/shared/directives/hover-border.directi
     MapsComponent,
     NotificationsComponent,
     StatistiqueComponent,
-    HoverBorderDirective
+    HoverBorderDirective,
+    AppreciationToColorPipe
   ]
 })
 

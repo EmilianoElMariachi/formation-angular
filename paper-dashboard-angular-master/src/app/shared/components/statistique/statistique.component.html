@@ -1,9 +1,9 @@
-<div class="card card-stats" appHoverBorder [couleur]="getAppreciationClass(stat)">
+<div class="card card-stats" appHoverBorder [couleur]="stat.getAppreciation() | appreciationToColor">
     <div class="card-body ">
         <div class="row">
             <div class="col-5 col-md-4">
                 <div class="icon-big text-center">
-                    <i class="nc-icon text-{{getAppreciationClass(stat)}} nc-{{stat.getIcone()}}"></i>
+                    <i class="nc-icon text-{{stat.getAppreciation() | appreciationToColor }} nc-{{stat.getIcone()}}"></i>
                 </div>
             </div>
             <div class="col-7 col-md-8">
