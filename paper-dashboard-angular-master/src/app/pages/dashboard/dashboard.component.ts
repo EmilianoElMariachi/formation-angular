@@ -1,43 +1,46 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import Chart from 'chart.js';
+import { Component, OnInit, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { Statistique } from 'app/shared/models/Statistique';
 import { Appreciation } from 'app/shared/models/Appreciation';
 
+import Chart from 'chart.js';
+import { StatService } from 'app/shared/services/stat.service';
+import { AppreciationToColorPipe } from 'app/shared/pipes/appreciation-to-color.pipe';
 
 @Component({
   selector: 'dashboard-cmp',
   templateUrl: 'dashboard.component.html'
 })
+
 export class DashboardComponent implements OnInit {
 
   public tabStats:Statistique[];
-
   public canvas: any;
   public ctx;
   public chartColor;
   public chartEmail;
   public chartHours;
 
+  constructor(private statService : StatService) { }
+
   ngOnInit() {
-    this.tabStats = [
-      new Statistique("Revenue", "1450$", "money-coins", Appreciation.SUCCESS),
-      new Statistique("Capacity", "150GB", "globe", Appreciation.WARNING),
-      new Statistique("Followers", "1450$", "favourite-28", Appreciation.WARNING),
-      new Statistique("Errors", "23", "vector", Appreciation.ERROR)
-    ];
+    this.tabStats = this.statService.getAllStats();
 
     setTimeout(() => {
-      this.tabStats.push(new Statistique("Nouvelle stat", "Une valeur", "bank", Appreciation.ERROR))
+      this.statService.addStat(new Statistique("Nouvelle stat", "Une valeur", "bank", Appreciation.ERROR));
     }, 2000);
 
-    setTimeout(() => {
-      let statCapacity = this.tabStats.find(stat => stat.getIntitule() == "Capacity");
-      if (statCapacity) {
-        statCapacity.setValeur("4000 TB");
-        statCapacity.setAppreciation(Appreciation.SUCCESS);
-      }
-    }, 3000);
+    this.initCharts();
 
+    setTimeout(() => {
+      this.chartHours.data.datasets.forEach((dataset) => {
+        dataset.data[1] = 500;
+      });
+      this.chartHours.update();
+    }, 5000);
+  }
+
+  initCharts() {
+    
     this.chartColor = "#FFFFFF";
 
     this.canvas = document.getElementById("chartHours");
@@ -227,5 +230,4 @@ export class DashboardComponent implements OnInit {
       options: chartOptions
     });
   }
-
 }
