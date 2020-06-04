@@ -10,10 +10,7 @@ import { Appreciation } from 'app/shared/models/Appreciation';
 })
 export class DashboardComponent implements OnInit {
 
-  public revenue: Statistique;
-  public capacity: Statistique;
-  public followers: Statistique;
-  public errors: Statistique;
+  public tabStats:Statistique[];
 
   public canvas: any;
   public ctx;
@@ -21,22 +18,25 @@ export class DashboardComponent implements OnInit {
   public chartEmail;
   public chartHours;
 
-  getAppreciationClass(stat: Statistique) {
-    switch (stat.getAppreciation()) {
-      case Appreciation.SUCCESS:
-        return "success"
-      case Appreciation.WARNING:
-        return "warning";
-      case Appreciation.ERROR:
-        return "danger";
-    }
-  }
-
   ngOnInit() {
-    this.revenue = new Statistique("Revenue", "1450$", "money-coins", Appreciation.SUCCESS);
-    this.capacity = new Statistique("Capacity", "151GB", "globe", Appreciation.WARNING);
-    this.followers = new Statistique("Followers", "45658", "favourite-28", Appreciation.WARNING);
-    this.errors = new Statistique("Errors", "23", "vector", Appreciation.ERROR);
+    this.tabStats = [
+      new Statistique("Revenue", "1450$", "money-coins", Appreciation.SUCCESS),
+      new Statistique("Capacity", "150GB", "globe", Appreciation.WARNING),
+      new Statistique("Followers", "1450$", "favourite-28", Appreciation.WARNING),
+      new Statistique("Errors", "23", "vector", Appreciation.ERROR)
+    ];
+
+    setTimeout(() => {
+      this.tabStats.push(new Statistique("Nouvelle stat", "Une valeur", "bank", Appreciation.ERROR))
+    }, 2000);
+
+    setTimeout(() => {
+      let statCapacity = this.tabStats.find(stat => stat.getIntitule() == "Capacity");
+      if (statCapacity) {
+        statCapacity.setValeur("4000 TB");
+        statCapacity.setAppreciation(Appreciation.SUCCESS);
+      }
+    }, 3000);
 
     this.chartColor = "#FFFFFF";
 
