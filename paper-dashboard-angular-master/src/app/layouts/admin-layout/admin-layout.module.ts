@@ -20,6 +20,7 @@ import { HoverBorderDirective } from 'app/shared/directives/hover-border.directi
 import { AppreciationToColorPipe } from 'app/shared/pipes/appreciation-to-color.pipe';
 import { StatTemplatedrivenFormComponent } from 'app/shared/components/stat-templatedriven-form/new-stat-templatedriven-form/stat-templatedriven-form.component';
 import { StatReactiveFormComponent } from '../../shared/components/stat-reactive-form/stat-reactive-form.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { StatReactiveFormComponent } from '../../shared/components/stat-reactive
     RouterModule.forChild(AdminLayoutRoutes),
     FormsModule,
     ReactiveFormsModule,
-    NgbModule
+    NgbModule,
+    TranslateModule
   ],
   declarations: [
     DashboardComponent,

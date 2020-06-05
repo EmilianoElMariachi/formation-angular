@@ -1,0 +1,15 @@
+{
+    "pages": {
+        "dashboard": {
+            "save_success" : "Your stat has been saved.",
+            "save_error" : "Save failed. Please retry later.",
+            "delete_success" : "Votre statistique a bien été supprimée.",
+            "switch_lang": "Switch to french"
+        } 
+    },
+    "components": {
+        "stat": {
+            "update": "Update me"
+        }
+    }
+}

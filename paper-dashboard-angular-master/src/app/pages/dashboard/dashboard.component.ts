@@ -5,6 +5,7 @@ import { Appreciation } from 'app/shared/models/Appreciation';
 import Chart from 'chart.js';
 import { StatService } from 'app/shared/services/stat.service';
 import { AppreciationToColorPipe } from 'app/shared/pipes/appreciation-to-color.pipe';
+import { AppTranslateService } from 'app/shared/services/app-translate-service';
 
 @Component({
   selector: 'dashboard-cmp',
@@ -23,7 +24,7 @@ export class DashboardComponent implements OnInit {
   public editMode:boolean = false;
   public editedStat:Statistique;
 
-  constructor(private statService : StatService) { }
+  constructor(private statService : StatService, private translator: AppTranslateService) { }
 
   ngOnInit() {
     this.statService.getAllStats().then(
@@ -105,6 +106,10 @@ export class DashboardComponent implements OnInit {
         this.tabStats[index].setValeur(res.getValeur());
       }
     );
+  }
+
+  switchLang() {
+    this.translator.switchLang();
   }
 
   initCharts() {
