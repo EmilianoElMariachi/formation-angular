@@ -3,7 +3,8 @@
         <div class="row">
             <div class="col-5 col-md-4">
                 <div class="icon-big text-center">
-                    <i class="nc-icon text-{{stat.getAppreciation() | appreciationToColor }} nc-{{stat.getIcone()}}"></i>
+                    <i
+                        class="nc-icon text-{{stat.getAppreciation() | appreciationToColor }} nc-{{stat.getIcone()}}"></i>
                 </div>
             </div>
             <div class="col-7 col-md-8">
@@ -14,14 +15,17 @@
                 <div class="actionButtonsZone">
                     <i class="nc-icon text-danger nc-simple-remove" (click)="askForDelete()"></i>
                     <i class="nc-icon editIcon nc-ruler-pencil" (click)="askForUpdate()"></i>
-                </div>                
+                </div>
             </div>
         </div>
     </div>
     <div class="card-footer ">
         <hr>
-        <div class="stats">
-            <i class="fa fa-refresh"></i> Update now
+        <div class="stats" (click)="askForRefresh()">
+            <i class="fa fa-refresh"></i>
+        </div>
+        <div class="statMetaData">
+            <span>Dernière mise à jour le {{ stat.getDateDernierRefresh() | date:'medium'}}</span>
         </div>
     </div>
 </div>

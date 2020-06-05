@@ -26,7 +26,12 @@ export class DashboardComponent implements OnInit {
   constructor(private statService : StatService) { }
 
   ngOnInit() {
-    this.tabStats = this.statService.getAllStats();
+    this.statService.getAllStats().then(
+      (res : Statistique[]) => {
+        this.tabStats = res;
+      }
+    );
+
 
     this.initCharts();
 
@@ -49,28 +54,57 @@ export class DashboardComponent implements OnInit {
   
   /* Demande de création de stat */
   addStat(stat: Statistique) {
-    this.statService.addStat(stat);
+    this.statService.addStat(stat).then(
+      statistique => {
+        this.tabStats.push(statistique);}
+    );
   }
 
   /* Demande de validation d'une mise à jour */
   saveUpdate(stat: Statistique) {
-    this.statService.updateStat(stat);
+    this.statService.updateStat(stat).then(
+      res => {
+        let index = this.tabStats.findIndex(stat => stat.getId() == res.getId());
+        this.tabStats[index].setAppreciation(res.getAppreciation());
+        this.tabStats[index].setIntitule(res.getIntitule());
+        this.tabStats[index].setIcone(res.getIcone());
+        this.tabStats[index].setValeur(res.getValeur());
+      }
+    );
     this.editMode = false;
   }
 
   /* -------------------------------- */
   /* EVENEMENTS COMPOSANT STATISTIQUE */
   /* -------------------------------- */
-  /* Demande de suppression d'une statistique*/
 
+  /* Demande de suppression d'une statistique*/
   deleteStat(stat: Statistique) {
-    this.statService.removeStat(stat);
+    this.statService.removeStat(stat).then(
+      (res:any) => {
+        let index = this.tabStats.findIndex(stat => stat.getId() == res.id);
+        this.tabStats.splice(index, 1);
+      }
+    );
   }
 
   /* Demande de mise à jour d'une statistique */
   updateStat(stat: Statistique) {
     this.editMode = true;
     this.editedStat = stat;
+  }
+
+  /* Demande de refresh d'une statistique */
+  refreshStatistique(stat: Statistique) {
+    this.statService.getStat(stat.getId()).then(
+      res => {
+        let index = this.tabStats.findIndex(stat => stat.getId() == res.getId());
+        this.tabStats[index].setAppreciation(res.getAppreciation());
+        this.tabStats[index].setIntitule(res.getIntitule());
+        this.tabStats[index].setIcone(res.getIcone());
+        this.tabStats[index].setValeur(res.getValeur());
+      }
+    );
   }
 
   initCharts() {

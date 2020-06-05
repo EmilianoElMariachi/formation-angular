@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Statistique } from '../models/Statistique';
+import { HttpClient } from '@angular/common/http';
 import { Appreciation } from '../models/Appreciation';
 
 @Injectable({
@@ -7,37 +8,72 @@ import { Appreciation } from '../models/Appreciation';
 })
 export class StatService {
 
-  private tabStats : Statistique[];
+  private API_URL = "https://stats.naminilamy.fr";
 
-  constructor() { 
-    this.tabStats = [
-      new Statistique(1, "Revenue", "1450$", "money-coins", Appreciation.SUCCESS),
-      new Statistique(2, "Capacity", "150GB", "globe", Appreciation.WARNING),
-      new Statistique(3, "Followers", "1450$", "favourite-28", Appreciation.WARNING),
-      new Statistique(4, "Errors", "23", "vector", Appreciation.ERROR)
-    ];
+  constructor(private http: HttpClient) {}
+
+  getAllStats(): Promise<Statistique[]> {
+    return this.http.get(this.API_URL).toPromise().then(
+      res => {
+        let tabStats: Statistique[] = [];
+        for (var i in res) {
+          tabStats.push(
+            new Statistique(res[i].id, res[i].title, res[i].value, res[i].icon,
+                            <Appreciation>Appreciation[res[i].appreciation])
+          );
+        }
+        return tabStats;
+      },
+      err => {
+        return [];
+      }
+    );
   }
 
-  getAllStats() : Statistique[] {
-    return this.tabStats;
+  public getStat(id: string) : Promise<Statistique> {
+    return this.http.get(this.API_URL + "/" + id, {}).toPromise().then(
+      (res:any) => {
+        return new Statistique(res.id, res.title, res.value, res.icon, <Appreciation>Appreciation[res.appreciation]);
+      }
+    );
   }
 
-  addStat(statToAdd : Statistique) {
-    this.tabStats.push(statToAdd);
-  }
-
-  removeStat(statToRemove: Statistique) {
-    let index = this.tabStats.findIndex(stat => stat.getId() == statToRemove.getId());
-    if (index != -1) this.tabStats.splice(index, 1);
-  }
-
-  updateStat(updatedStat: Statistique) {
-    let index = this.tabStats.findIndex(stat => stat.getId() == updatedStat.getId());
-    if (index != -1) {
-      this.tabStats[index].setAppreciation(updatedStat.getAppreciation());
-      this.tabStats[index].setIntitule(updatedStat.getIntitule());
-      this.tabStats[index].setIcone(updatedStat.getIcone());
-      this.tabStats[index].setValeur(updatedStat.getValeur());
+  public addStat(stat: Statistique) : Promise<Statistique> {
+    var enumAppreciation = Appreciation;
+    var data = {
+      title: stat.getIntitule(),
+      value: stat.getValeur(),
+      icon: stat.getIcone(),
+      appreciation: this.getEnumKeyByEnumValue(enumAppreciation, stat.getAppreciation())
     }
+    return this.http.post(this.API_URL,data).toPromise().then(
+      (res:any) => {
+        return new Statistique(res.id, res.title, res.value, res.icon, <Appreciation>Appreciation[res.appreciation]);
+      }
+    );
+  }
+
+  getEnumKeyByEnumValue(myEnum, enumValue) {
+    let keys = Object.keys(myEnum).filter(x => myEnum[x] == enumValue);
+    return keys.length > 0 ? keys[0] : null;
+  }
+
+  public removeStat(statToDelete:Statistique) : Promise<Object> {
+    return this.http.delete(this.API_URL + "/" + statToDelete.getId()).toPromise();
+  }
+
+  public updateStat(statToUpdate:Statistique) : Promise<Statistique> {
+    var enumAppreciation = Appreciation;
+    var data = {
+      title: statToUpdate.getIntitule(),
+      value: statToUpdate.getValeur(),
+      icon: statToUpdate.getIcone(),
+      appreciation: this.getEnumKeyByEnumValue(enumAppreciation, statToUpdate.getAppreciation())
+    }
+    return this.http.put(this.API_URL + "/" + statToUpdate.getId(),data).toPromise().then(
+      (res:any) => {
+        return new Statistique(res.id, res.title, res.value, res.icon, <Appreciation>Appreciation[res.appreciation]);
+      }
+    );
   }
 }

@@ -5,18 +5,17 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
 export const AppRoutes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full',
-  }, {
-    path: '',
     component: AdminLayoutComponent,
     children: [
-        {
-      path: '',
-      loadChildren: () => import('./layouts/admin-layout/admin-layout.module').then(m => m.AdminLayoutModule)
-  }]},
+      {
+        path: '',
+        loadChildren: () => import('./layouts/admin-layout/admin-layout.module').then(m => m.AdminLayoutModule)
+      }
+    ]
+  },
   {
     path: '**',
-    redirectTo: 'dashboard'
+    redirectTo: 'dashboard',
+    pathMatch: 'full',
   }
 ]

@@ -13,6 +13,9 @@ export class StatistiqueComponent  {
   public stat:Statistique;
   
   @Output()
+  public refreshMe: EventEmitter<Statistique> = new EventEmitter<Statistique>();
+
+  @Output()
   public deleteMe: EventEmitter<Statistique> = new EventEmitter<Statistique>();
 
   @Output()
@@ -26,6 +29,10 @@ export class StatistiqueComponent  {
 
   askForUpdate() {
     this.updateMe.emit(this.stat);
+  }
+
+  askForRefresh() {
+    this.refreshMe.emit(this.stat);
   }
 
 }
