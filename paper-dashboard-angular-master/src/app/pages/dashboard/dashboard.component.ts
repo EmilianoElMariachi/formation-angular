@@ -1,46 +1,53 @@
-import { Component, OnInit, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy} from '@angular/core';
 import { Statistique } from 'app/shared/models/Statistique';
-import { Appreciation } from 'app/shared/models/Appreciation';
 
 import Chart from 'chart.js';
 import { StatService } from 'app/shared/services/stat.service';
-import { AppreciationToColorPipe } from 'app/shared/pipes/appreciation-to-color.pipe';
 import { AppTranslateService } from 'app/shared/services/app-translate-service';
 import { WebSocketService } from 'app/shared/services/web-socket.service';
 import { MessageType } from 'app/shared/models/ServerMessage';
+import { AppToastService } from 'app/shared/services/app-toast-service';
+import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'dashboard-cmp',
   templateUrl: 'dashboard.component.html'
 })
 
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
-  public tabStats:Statistique[];
+  public tabStats: Statistique[];
   public canvas: any;
   public ctx;
   public chartColor;
   public chartEmail;
   public chartHours;
 
-  public editMode:boolean = false;
-  public editedStat:Statistique;
-
-  constructor(private statService : StatService, private wsService: WebSocketService, private translator: AppTranslateService) { }
+  public editMode: boolean = false;
+  public editedStat: Statistique;
+  private subscription: Subscription;
+  
+  constructor(private statService: StatService,
+    private wsService: WebSocketService,
+    private translator: AppTranslateService,
+    private toastService: AppToastService) { }
 
   ngOnInit() {
-    this.wsService.getServerObservable().subscribe(
-      message => {
-        switch (message.type) {
-          case MessageType.NEW_DATA : this.handleNewStat(message.objectRef); break;
-          case MessageType.DELETED_DATA : this.handleDeletedStat(message.objectRef.getId()); break;
-          case MessageType.UPDATED_DATA : this.handleUpdatedStat(message.objectRef); break;
+    if (!this.subscription) {
+      this.subscription = this.wsService.getServerObservable().subscribe(
+        message => {
+          switch (message.type) {
+            case MessageType.NEW_DATA: this.handleNewStat(message.objectRef, true); break;
+            case MessageType.DELETED_DATA: this.handleDeletedStat(message.objectRef.getId(), true); break;
+            case MessageType.UPDATED_DATA: this.handleUpdatedStat(message.objectRef, true); break;
+          }
         }
-      }
-    );
+      );
+    }
 
     this.statService.getAllStats().then(
-      (res : Statistique[]) => {
+      (res: Statistique[]) => {
         this.tabStats = res;
       }
     );
@@ -56,44 +63,66 @@ export class DashboardComponent implements OnInit {
     }, 5000);
   }
 
+  ngOnDestroy() {
+    if (this.subscription) this.subscription.unsubscribe();
+  }
+  
   /* -------------------------------- */
   /* EVENEMENTS COMPOSANT FORMULAIRE */
-  /* -------------------------------- */  
+  /* -------------------------------- */
 
   /* Demande d'annulation de mise à jour */
   cancelEdit() {
     this.editMode = false;
   }
-  
+
   /* Demande de création de stat */
   addStat(stat: Statistique) {
     this.statService.addStat(stat).then(
-      statistique => { this.handleNewStat(statistique);}
+      statistique => {
+        this.handleNewStat(statistique, false);
+        this.toastService.showSuccess(this.translator.instant('pages.dashboard.save_success'));
+      }
     );
   }
 
-  handleNewStat(newStat: Statistique) {
+  handleNewStat(newStat: Statistique, displayToast: boolean) {
     let index = this.tabStats.findIndex(stat => stat.getId() == newStat.getId());
-    if (index == -1) this.tabStats.push(newStat);
+    if (index == -1) {
+      this.tabStats.push(newStat);
+      if (displayToast) {
+        this.toastService.showInfo(this.translator.instantWithValues('pages.dashboard.incoming_stat', { title: newStat.getIntitule() }));
+      }      
+    }
   }
 
   /* Demande de validation d'une mise à jour */
   saveUpdate(stat: Statistique) {
     this.statService.updateStat(stat).then(
       res => {
-        this.handleUpdatedStat(res);
+        this.handleUpdatedStat(res, false);
+        this.toastService.showSuccess(this.translator.instant('pages.dashboard.update_success'));
       }
     );
     this.editMode = false;
   }
 
-  handleUpdatedStat(updatedStat: Statistique) {
+  handleUpdatedStat(updatedStat: Statistique, displayToast: boolean) {
     let index = this.tabStats.findIndex(stat => stat.getId() == updatedStat.getId());
-    this.tabStats[index].setAppreciation(updatedStat.getAppreciation());
-    this.tabStats[index].setIntitule(updatedStat.getIntitule());
-    this.tabStats[index].setIcone(updatedStat.getIcone());
-    this.tabStats[index].setValeur(updatedStat.getValeur());
+    if (index != -1) {
+      let hasChange: boolean;
+      hasChange = JSON.stringify(this.tabStats[index]) != JSON.stringify(updatedStat);
+
+      this.tabStats[index].setAppreciation(updatedStat.getAppreciation());
+      this.tabStats[index].setIntitule(updatedStat.getIntitule());
+      this.tabStats[index].setIcone(updatedStat.getIcone());
+      this.tabStats[index].setValeur(updatedStat.getValeur());
+      if (displayToast && hasChange) {
+        this.toastService.showInfo(this.translator.instantWithValues('pages.dashboard.updated_stat', { title: updatedStat.getIntitule() }));
+      }
+    }
   }
+  
 
   /* -------------------------------- */
   /* EVENEMENTS COMPOSANT STATISTIQUE */
@@ -102,16 +131,22 @@ export class DashboardComponent implements OnInit {
   /* Demande de suppression d'une statistique*/
   deleteStat(stat: Statistique) {
     this.statService.removeStat(stat).then(
-      (res:any) => {
-        this.handleDeletedStat(res.id);
+      (res: any) => {
+        this.handleDeletedStat(res.id, false);
+        this.toastService.showSuccess(this.translator.instant('pages.dashboard.delete_success'));
       }
     );
   }
 
-  handleDeletedStat(statId:string) {
+  handleDeletedStat(statId: string, displayToast: boolean) {
     let index = this.tabStats.findIndex(stat => stat.getId() == statId);
-    if (index != -1) 
+    if (index != -1) {
+      if (displayToast) {
+        this.toastService.showInfo(this.translator.instantWithValues('pages.dashboard.deleted_stat', { title: this.tabStats[index].getIntitule() }));
+      }
       this.tabStats.splice(index, 1);
+
+    }
   }
 
   /* Demande de mise à jour d'une statistique */
@@ -138,7 +173,7 @@ export class DashboardComponent implements OnInit {
   }
 
   initCharts() {
-    
+
     this.chartColor = "#FFFFFF";
 
     this.canvas = document.getElementById("chartHours");

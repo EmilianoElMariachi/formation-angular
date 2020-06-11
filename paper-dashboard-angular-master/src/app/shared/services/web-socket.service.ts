@@ -11,7 +11,6 @@ import { Appreciation } from '../models/Appreciation';
 export class WebSocketService {
   private WS_URL = "wss://ac88n1oa17.execute-api.eu-west-3.amazonaws.com/dev";
 
-  
   private webSocketSubject : WebSocketSubject<any>;
   private appStream: Subject<ServerMessage>;
   

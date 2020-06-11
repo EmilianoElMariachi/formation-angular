@@ -19,6 +19,10 @@ export class AppTranslateService {
     return this.translate.instant(key);
   }
 
+  instantWithValues(key: string, values: any) {
+    return this.translate.instant(key, values);
+  }
+
   switchLang() {
     if(this.currentLang == 'fr') {
       this.translate.use('en');
