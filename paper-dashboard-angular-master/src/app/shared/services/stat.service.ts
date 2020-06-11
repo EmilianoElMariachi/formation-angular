@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Statistique } from '../models/Statistique';
 import { HttpClient } from '@angular/common/http';
 import { Appreciation } from '../models/Appreciation';
+import { webSocket, WebSocketSubject } from "rxjs/webSocket";
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,8 @@ export class StatService {
 
   private API_URL = "https://stats.naminilamy.fr";
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient)  {
+  }
 
   getAllStats(): Promise<Statistique[]> {
     return this.http.get(this.API_URL).toPromise().then(

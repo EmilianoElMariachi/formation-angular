@@ -6,6 +6,8 @@ import Chart from 'chart.js';
 import { StatService } from 'app/shared/services/stat.service';
 import { AppreciationToColorPipe } from 'app/shared/pipes/appreciation-to-color.pipe';
 import { AppTranslateService } from 'app/shared/services/app-translate-service';
+import { WebSocketService } from 'app/shared/services/web-socket.service';
+import { MessageType } from 'app/shared/models/ServerMessage';
 
 @Component({
   selector: 'dashboard-cmp',
@@ -24,9 +26,19 @@ export class DashboardComponent implements OnInit {
   public editMode:boolean = false;
   public editedStat:Statistique;
 
-  constructor(private statService : StatService, private translator: AppTranslateService) { }
+  constructor(private statService : StatService, private wsService: WebSocketService, private translator: AppTranslateService) { }
 
   ngOnInit() {
+    this.wsService.getServerObservable().subscribe(
+      message => {
+        switch (message.type) {
+          case MessageType.NEW_DATA : this.handleNewStat(message.objectRef); break;
+          case MessageType.DELETED_DATA : this.handleDeletedStat(message.objectRef.getId()); break;
+          case MessageType.UPDATED_DATA : this.handleUpdatedStat(message.objectRef); break;
+        }
+      }
+    );
+
     this.statService.getAllStats().then(
       (res : Statistique[]) => {
         this.tabStats = res;
@@ -56,23 +68,31 @@ export class DashboardComponent implements OnInit {
   /* Demande de création de stat */
   addStat(stat: Statistique) {
     this.statService.addStat(stat).then(
-      statistique => {
-        this.tabStats.push(statistique);}
+      statistique => { this.handleNewStat(statistique);}
     );
+  }
+
+  handleNewStat(newStat: Statistique) {
+    let index = this.tabStats.findIndex(stat => stat.getId() == newStat.getId());
+    if (index == -1) this.tabStats.push(newStat);
   }
 
   /* Demande de validation d'une mise à jour */
   saveUpdate(stat: Statistique) {
     this.statService.updateStat(stat).then(
       res => {
-        let index = this.tabStats.findIndex(stat => stat.getId() == res.getId());
-        this.tabStats[index].setAppreciation(res.getAppreciation());
-        this.tabStats[index].setIntitule(res.getIntitule());
-        this.tabStats[index].setIcone(res.getIcone());
-        this.tabStats[index].setValeur(res.getValeur());
+        this.handleUpdatedStat(res);
       }
     );
     this.editMode = false;
+  }
+
+  handleUpdatedStat(updatedStat: Statistique) {
+    let index = this.tabStats.findIndex(stat => stat.getId() == updatedStat.getId());
+    this.tabStats[index].setAppreciation(updatedStat.getAppreciation());
+    this.tabStats[index].setIntitule(updatedStat.getIntitule());
+    this.tabStats[index].setIcone(updatedStat.getIcone());
+    this.tabStats[index].setValeur(updatedStat.getValeur());
   }
 
   /* -------------------------------- */
@@ -83,10 +103,15 @@ export class DashboardComponent implements OnInit {
   deleteStat(stat: Statistique) {
     this.statService.removeStat(stat).then(
       (res:any) => {
-        let index = this.tabStats.findIndex(stat => stat.getId() == res.id);
-        this.tabStats.splice(index, 1);
+        this.handleDeletedStat(res.id);
       }
     );
+  }
+
+  handleDeletedStat(statId:string) {
+    let index = this.tabStats.findIndex(stat => stat.getId() == statId);
+    if (index != -1) 
+      this.tabStats.splice(index, 1);
   }
 
   /* Demande de mise à jour d'une statistique */
