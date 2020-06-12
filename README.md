@@ -26,7 +26,6 @@ Par exemple pour la première étape : `git checkout classeStatistique`
  * [i18n](#i18n)
  * [webSocket](#websocket)
  * [interceptor](#interceptor)
- * [full](#full)
  
 
 ## Master
@@ -86,9 +85,3 @@ L'interface devient "réactive" avec un mode de communication "PUSH" (le back-en
 ## Interceptor 
 
 Ajout d'un intercepteur exemple qui bouchonne le GET statistiques.
-
-## Projet complet
-
-Projet complet avec quelques ajouts : 
-  - utilisation de la librairie ngx-spinner 
-  - ajout d'un graphique type "pie" permettant de compter les statistiques par état.
