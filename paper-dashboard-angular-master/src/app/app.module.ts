@@ -16,7 +16,8 @@ import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpMockService } from './shared/services/http-mock.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -47,7 +48,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
     }),
   ],
-  providers: [],
+  providers: [ {provide: HTTP_INTERCEPTORS, useClass: HttpMockService, multi: true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
