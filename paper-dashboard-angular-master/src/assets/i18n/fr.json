@@ -14,7 +14,8 @@
             "icon": "Icône",
             "state": "Appréciation",
             "add": "Ajouter",
-            "update": "Mettre à jour"
+            "update": "Mettre à jour",
+            "cancel": "Annuler"
         }
     }
 }

@@ -14,7 +14,8 @@
             "icon": "Icon",
             "state": "State",
             "add": "Add",
-            "update": "Update me"
+            "update": "Update me",
+            "cancel": "Cancel"
         }
     }
 }
