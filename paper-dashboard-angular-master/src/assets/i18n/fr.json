@@ -9,6 +9,11 @@
     },
     "components": {
         "stat": {
+            "title": "Intitulé",
+            "value": "Valeur",
+            "icon": "Icône",
+            "state": "Appréciation",
+            "add": "Ajouter",
             "update": "Mettre à jour"
         }
     }

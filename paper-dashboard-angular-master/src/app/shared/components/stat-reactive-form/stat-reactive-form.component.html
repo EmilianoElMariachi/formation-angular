@@ -4,13 +4,13 @@
         <form [formGroup]="statForm" (ngSubmit)="onSubmit()">
             <div class="row">
                 <div class="col-md-6 form-group">
-                    <label for="nomStat">Nom : </label>
+                    <label for="nomStat">{{ 'components.stat.title' | translate }} : </label>
                     <input type="text" id="nomStat" class="form-control"
                     name="nom" formControlName="nom"
                     required>
                 </div>
                 <div class="col-md-6 form-group">
-                    <label for="valeurStat">Valeur : </label>
+                    <label for="valeurStat">{{ 'components.stat.value' | translate }} : </label>
                     <input type="text" id="valeurStat" class="form-control"
                     name="valeur" formControlName="valeur"
                     required>
@@ -18,13 +18,13 @@
             </div>
             <div class="row">
                 <div class="col-md-6 form-group">
-                    <label for="iconeStat">Icone : </label>
+                    <label for="iconeStat">{{ 'components.stat.icon' | translate }} : </label>
                     <input type="text" id="iconeStat" class="form-control"
                     name="icone" formControlName="icone"
                     required>
                 </div>
                 <div class="col-md-6 form-group">
-                    <label for="appreciationStat">Appréciation : </label>
+                    <label for="appreciationStat">{{ 'components.stat.state' | translate }} : </label>
                     <select class="custom-select form-control" id="appreciationStat" formControlName="appreciation" name="appreciation" required>
                         <option *ngFor="let item of enumAppreciation | keyvalue" [value]="item.value">{{item.value}}</option>
                     </select>
@@ -33,8 +33,8 @@
             <div class="row">
                 <div class="col-md-3">
                     <button class="btn btn-success" type="submit" [disabled]="!statForm.valid">
-                        <span *ngIf="!editMode">Ajouter</span>
-                        <span *ngIf="editMode">Mettre à jour</span>
+                        <span *ngIf="!editMode">{{ 'components.stat.add' | translate }}</span>
+                        <span *ngIf="editMode">{{ 'components.stat.update' | translate }}</span>
                     </button>
                     <button *ngIf="editMode" class="btn btn-success" (click)="onCancel()">
                         <span>Annuler</span>
