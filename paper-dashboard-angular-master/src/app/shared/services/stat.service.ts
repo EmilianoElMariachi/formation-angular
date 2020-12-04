@@ -14,12 +14,12 @@ export class StatService {
 
   getAllStats(): Promise<Statistique[]> {
     return this.http.get(this.API_URL).toPromise().then(
-      res => {
+      (res:Array<any>) => {
         let tabStats: Statistique[] = [];
-        for (var i in res) {
+        for (let stat of res) {
           tabStats.push(
-            new Statistique(res[i].id, res[i].title, res[i].value, res[i].icon,
-                            <Appreciation>Appreciation[res[i].appreciation])
+            new Statistique(stat.id, stat.title, stat.value, stat.icon,
+                            <Appreciation>Appreciation[stat.appreciation])
           );
         }
         return tabStats;
