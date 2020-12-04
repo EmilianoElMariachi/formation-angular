@@ -39,7 +39,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         message => {
           switch (message.type) {
             case MessageType.NEW_DATA: this.handleNewStat(message.objectRef, true); break;
-            case MessageType.DELETED_DATA: this.handleDeletedStat(message.objectRef.getId(), true); break;
+            case MessageType.DELETED_DATA: this.handleDeletedStat(message.objectRef, true); break;
             case MessageType.UPDATED_DATA: this.handleUpdatedStat(message.objectRef, true); break;
           }
         }
@@ -101,7 +101,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.statService.updateStat(stat).then(
       res => {
         this.handleUpdatedStat(res, false);
-        this.toastService.showSuccess(this.translator.instant('pages.dashboard.update_success'));
       }
     );
     this.editMode = false;
@@ -117,6 +116,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.tabStats[index].setIntitule(updatedStat.getIntitule());
       this.tabStats[index].setIcone(updatedStat.getIcone());
       this.tabStats[index].setValeur(updatedStat.getValeur());
+
       if (displayToast && hasChange) {
         this.toastService.showInfo(this.translator.instantWithValues('pages.dashboard.updated_stat', { title: updatedStat.getIntitule() }));
       }
@@ -130,22 +130,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   /* Demande de suppression d'une statistique*/
   deleteStat(stat: Statistique) {
-    this.statService.removeStat(stat).then(
-      (res: any) => {
-        this.handleDeletedStat(res.id, false);
-        this.toastService.showSuccess(this.translator.instant('pages.dashboard.delete_success'));
-      }
-    );
+    this.statService.removeStat(stat);
   }
 
-  handleDeletedStat(statId: string, displayToast: boolean) {
-    let index = this.tabStats.findIndex(stat => stat.getId() == statId);
+  handleDeletedStat(deletedStat: Statistique, displayToast: boolean) {
+    let index = this.tabStats.findIndex(stat => stat.getId() == deletedStat.getId());
     if (index != -1) {
       if (displayToast) {
         this.toastService.showInfo(this.translator.instantWithValues('pages.dashboard.deleted_stat', { title: this.tabStats[index].getIntitule() }));
       }
       this.tabStats.splice(index, 1);
-
     }
   }
 

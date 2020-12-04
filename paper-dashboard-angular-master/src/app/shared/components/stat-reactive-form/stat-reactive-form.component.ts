@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Appreciation } from 'app/shared/models/Appreciation';
 import { Statistique } from 'app/shared/models/Statistique';
@@ -8,7 +8,7 @@ import { Statistique } from 'app/shared/models/Statistique';
   templateUrl: './stat-reactive-form.component.html',
   styleUrls: ['./stat-reactive-form.component.scss']
 })
-export class StatReactiveFormComponent implements OnInit {
+export class StatReactiveFormComponent implements OnInit, OnChanges {
 
   public statForm: FormGroup;
 
