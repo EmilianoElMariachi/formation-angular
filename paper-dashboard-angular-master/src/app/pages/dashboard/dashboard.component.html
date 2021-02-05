@@ -20,11 +20,10 @@
 
   <app-stat-reactive-form 
     class="col-lg-12 col-md-12 col-sm-12"
-    [editMode]="editMode"
+    [(editMode)]="editMode"
     [editedStat]="editedStat"
     (askForStatCreate)="addStat($event)"
-    (askForStatUpdate)="saveUpdate($event)"
-    (askForStatUpdateCancel)="cancelEdit()">
+    (askForStatUpdate)="saveUpdate($event)">
   </app-stat-reactive-form>  
 
 </div>
