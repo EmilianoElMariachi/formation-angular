@@ -18,6 +18,8 @@ export class StatReactiveFormComponent implements OnInit {
   /* Flag permettant de switcher entre le mode création / édition d'une statistique */
   @Input()
   editMode: boolean;
+  @Output() //Two way data-binding
+  editModeChange = new EventEmitter<boolean>();
 
   /* Statistique à mettre à jour ; ignorée si le flag editMode est à faux */
   @Input()
@@ -30,10 +32,6 @@ export class StatReactiveFormComponent implements OnInit {
   /* Evenement propagé lorsque l'utilisateur valide une mise à jour de statistique et que la saisie est correcte */
   @Output()
   askForStatUpdate: EventEmitter<Statistique> = new EventEmitter();
-
-  /* Evenement propagé lorsque l'utilisateur annule la mise à jour */
-  @Output()
-  askForStatUpdateCancel: EventEmitter<any> = new EventEmitter();
 
   constructor(private fb: FormBuilder) { }
 
@@ -85,8 +83,8 @@ export class StatReactiveFormComponent implements OnInit {
     this.statForm.reset();
   }
 
-  /* Demande d'annulation : propagation de l'événement askForStatUpdateCancel */
+  /* Demande d'annulation : exemple d'utilisation de two-way-data-binding */
   onCancel() {
-    this.askForStatUpdateCancel.emit();
+    this.editModeChange.emit(false);
   }
 }
