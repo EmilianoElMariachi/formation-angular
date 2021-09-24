@@ -14,12 +14,11 @@ export class StatService {
 
   getAllStats(): Promise<Statistique[]> {
     return this.http.get(this.API_URL).toPromise().then(
-      res => {
+      (res:any[]) => {
         let tabStats: Statistique[] = [];
-        for (var i in res) {
+        for (let stat of res) {
           tabStats.push(
-            new Statistique(res[i].id, res[i].title, res[i].value, res[i].icon,
-                            <Appreciation>Appreciation[res[i].appreciation])
+            new Statistique(stat.id, stat.title, stat.value, stat.icon, Appreciation[stat.appreciation])
           );
         }
         return tabStats;
@@ -33,7 +32,7 @@ export class StatService {
   public getStat(id: string) : Promise<Statistique> {
     return this.http.get(this.API_URL + "/" + id, {}).toPromise().then(
       (res:any) => {
-        return new Statistique(res.id, res.title, res.value, res.icon, <Appreciation>Appreciation[res.appreciation]);
+        return new Statistique(res.id, res.title, res.value, res.icon, Appreciation[res.appreciation]);
       }
     );
   }
@@ -48,7 +47,7 @@ export class StatService {
     }
     return this.http.post(this.API_URL,data).toPromise().then(
       (res:any) => {
-        return new Statistique(res.id, res.title, res.value, res.icon, <Appreciation>Appreciation[res.appreciation]);
+        return new Statistique(res.id, res.title, res.value, res.icon, Appreciation[res.appreciation]);
       }
     );
   }
@@ -72,7 +71,7 @@ export class StatService {
     }
     return this.http.put(this.API_URL + "/" + statToUpdate.getId(),data).toPromise().then(
       (res:any) => {
-        return new Statistique(res.id, res.title, res.value, res.icon, <Appreciation>Appreciation[res.appreciation]);
+        return new Statistique(res.id, res.title, res.value, res.icon, Appreciation[res.appreciation]);
       }
     );
   }
