@@ -18,7 +18,7 @@ export class StatReactiveFormComponent implements OnInit, OnChanges {
   /* Flag permettant de switcher entre le mode création / édition d'une statistique */
   @Input()
   editMode: boolean;
-  @Output() //Two way data-binding
+  @Output()
   editModeChange = new EventEmitter<boolean>();
 
   /* Statistique à mettre à jour ; ignorée si le flag editMode est à faux */

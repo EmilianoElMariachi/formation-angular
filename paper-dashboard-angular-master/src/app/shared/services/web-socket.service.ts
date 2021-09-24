@@ -25,8 +25,7 @@ export class WebSocketService {
       (msg:any) => {
         let serverMessage : ServerMessage = {
           type : <any>MessageType[msg.type] as MessageType,
-          objectRef : new Statistique(msg.object.id, msg.object.title, msg.object.value, msg.object.icon,
-            <Appreciation>Appreciation[msg.object.appreciation])
+          objectRef : new Statistique(msg.object.id, msg.object.title, msg.object.value, msg.object.icon, Appreciation[msg.object.appreciation])
         }
         this.appStream.next(serverMessage);
       },
